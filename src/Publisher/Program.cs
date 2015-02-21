@@ -31,10 +31,7 @@ namespace Publisher
           {
             byte[] subscriptionBytes = publisher.Receive();
 
-            // first byte indicate if it a subscription or unsubscription
-            bool subscription = subscriptionBytes[0] == 1;
-
-            if (subscription)
+            if (subscriptionBytes[0] == 1 || subscriptionBytes[0] == 0)
             {
               // the rest of the bytes is the token, convert them to string
               string serializedToken = Encoding.ASCII.GetString(
@@ -48,7 +45,8 @@ namespace Publisher
                 // Check if the token is valid
                 if (token.Validate(Key))
                 {
-                  if (subscription)
+                  // first byte indicate if it a subscription or unsubscription
+                  if (subscriptionBytes[0] == 1)
                   {
                     Console.WriteLine("Subscription request {0}",
                         token.Subscription);
